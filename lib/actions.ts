@@ -39,6 +39,8 @@ export async function createPost(
     return { error: error.message };
   }
 
+  revalidatePath("/");
+  revalidatePath("/admin");
   redirect("/admin");
 }
 
@@ -72,6 +74,9 @@ export async function updatePost(
     return { error: error.message };
   }
 
+  revalidatePath("/");
+  revalidatePath("/admin");
+  revalidatePath(`/posts/${slug}`);
   redirect("/admin");
 }
 
@@ -86,6 +91,7 @@ export async function deletePost(id: string): Promise<ActionState> {
 
   if (error) return { error: error.message };
 
+  revalidatePath("/");
   revalidatePath("/admin");
   return null;
 }
