@@ -1,6 +1,3 @@
-// Edit an existing post.
-// This is a Server Component: it fetches the post data, then renders the client-side form.
-
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createAdminSupabaseClient } from "@/lib/supabase/admin";
@@ -8,7 +5,6 @@ import { PostForm } from "@/components/admin/PostForm";
 import { updatePost } from "@/lib/actions";
 
 type Props = {
-  // In Next.js 16, route params are a Promise — must be awaited.
   params: Promise<{ id: string }>;
 };
 
@@ -24,20 +20,24 @@ export default async function EditPostPage({ params }: Props) {
 
   if (error || !post) notFound();
 
-  // Bind the post ID into the updatePost action so the form doesn't need a hidden field.
-  // updatePost.bind(null, id) creates a new function: (prevState, formData) => updatePost(id, prevState, formData)
   const updatePostWithId = updatePost.bind(null, post.id);
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-16">
-      <div className="mb-8">
+    <main className="max-w-2xl mx-auto px-6 py-16">
+      <div className="mb-10">
         <Link
           href="/admin"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-mono text-zinc-400 hover:text-zinc-700 transition-colors cursor-pointer mb-4"
         >
-          ← Back to all posts
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M19 12H5M12 5l-7 7 7 7" />
+          </svg>
+          All posts
         </Link>
-        <h1 className="text-2xl font-bold mt-3">Edit post</h1>
+        <p className="text-[11px] font-mono text-pink-500 tracking-[0.2em] uppercase mb-1">Edit</p>
+        <h1 className="font-(family-name:--font-caveat) text-4xl font-bold text-zinc-900 truncate">
+          {post.title}
+        </h1>
       </div>
 
       <PostForm action={updatePostWithId} post={post} />

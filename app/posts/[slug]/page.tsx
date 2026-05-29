@@ -15,6 +15,12 @@ function formatDate(iso: string) {
   });
 }
 
+function readingTime(content: string) {
+  const words = content.trim().split(/\s+/).length;
+  const minutes = Math.ceil(words / 200);
+  return `${minutes} min read`;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const supabase = createPublicSupabaseClient();
@@ -45,45 +51,48 @@ export default async function PostPage({ params }: Props) {
       {/* Back link */}
       <Link
         href="/"
-        className="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-zinc-700 transition-colors duration-150 cursor-pointer mb-12"
+        className="inline-flex items-center gap-2 text-xs font-mono text-zinc-400 hover:text-zinc-700 transition-colors duration-150 cursor-pointer mb-14 tracking-wide"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="M19 12H5M12 5l-7 7 7 7"/>
+          <path d="M19 12H5M12 5l-7 7 7 7" />
         </svg>
         All posts
       </Link>
 
       {/* Title */}
-      <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 leading-tight">
+      <h1 className="font-(family-name:--font-caveat) text-5xl sm:text-6xl font-bold text-zinc-900 leading-[1.1] mb-6">
         {post.title}
       </h1>
 
-      {/* Date */}
-      <time
-        dateTime={post.created_at}
-        className="mt-3 block text-sm text-zinc-400 font-mono"
-      >
-        {formatDate(post.created_at)}
-      </time>
+      {/* Meta */}
+      <div className="flex items-center gap-3 text-xs font-mono text-zinc-400">
+        <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
+        <span aria-hidden="true">·</span>
+        <span>{readingTime(post.content)}</span>
+      </div>
 
       {/* Divider */}
-      <hr className="my-10 border-zinc-200" />
+      <div className="my-10 h-px bg-zinc-200" />
 
-      {/* Content — prose plugin handles heading/paragraph/code styles */}
-      <div className="prose prose-zinc max-w-none prose-headings:font-semibold prose-headings:tracking-tight prose-a:text-pink-500 prose-a:no-underline hover:prose-a:underline prose-code:text-zinc-700 prose-code:bg-zinc-100 prose-code:rounded prose-code:px-1 prose-code:text-sm">
+      {/* Content */}
+      <div className="prose prose-zinc max-w-none leading-relaxed prose-headings:font-semibold prose-headings:tracking-tight prose-a:text-pink-500 prose-a:no-underline hover:prose-a:underline prose-code:text-zinc-700 prose-code:bg-zinc-100 prose-code:rounded prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm prose-pre:bg-zinc-900 prose-pre:text-zinc-100 prose-blockquote:border-l-pink-300 prose-blockquote:text-zinc-500">
         <ReactMarkdown remarkPlugins={[remarkGfm]}>
           {post.content}
         </ReactMarkdown>
       </div>
 
-      {/* Footer nav */}
-      <div className="mt-16 pt-8 border-t border-zinc-200">
+      {/* Footer */}
+      <div className="mt-20 pt-8 border-t border-zinc-100 flex items-center justify-between">
         <Link
           href="/"
-          className="text-sm text-zinc-400 hover:text-zinc-700 transition-colors duration-150 cursor-pointer"
+          className="inline-flex items-center gap-2 text-xs font-mono text-zinc-400 hover:text-zinc-700 transition-colors duration-150 cursor-pointer tracking-wide"
         >
-          ← Back to all posts
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M19 12H5M12 5l-7 7 7 7" />
+          </svg>
+          Back to all posts
         </Link>
+        <span className="text-xs font-mono text-zinc-300">{formatDate(post.created_at)}</span>
       </div>
     </article>
   );

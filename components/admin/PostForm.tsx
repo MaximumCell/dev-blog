@@ -1,7 +1,3 @@
-// Reusable form for creating and editing posts.
-// Used by both /admin/new and /admin/posts/[id]/edit.
-// It's a Client Component so it can auto-generate the slug as you type.
-
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
@@ -12,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import type { ActionState } from "@/lib/actions";
 import type { Post } from "@/types";
 
-// Converts a title to a slug. e.g. "My First Post!" → "my-first-post"
 function slugify(value: string) {
   return value
     .toLowerCase()
@@ -23,9 +18,7 @@ function slugify(value: string) {
 }
 
 type PostFormProps = {
-  // The server action to call on submit. Signature matches useActionState.
   action: (prevState: ActionState, formData: FormData) => Promise<ActionState>;
-  // When editing an existing post, pass it here to pre-fill the form.
   post?: Pick<Post, "title" | "slug" | "content" | "published">;
 };
 
@@ -34,11 +27,8 @@ export function PostForm({ action, post }: PostFormProps) {
 
   const [title, setTitle] = useState(post?.title ?? "");
   const [slug, setSlug] = useState(post?.slug ?? "");
-  // slugEdited = true means the user has manually changed the slug,
-  // so we stop auto-generating it from the title.
   const [slugEdited, setSlugEdited] = useState(!!post);
 
-  // Auto-generate slug from title only in "create" mode.
   useEffect(() => {
     if (!slugEdited) {
       setSlug(slugify(title));
@@ -46,16 +36,18 @@ export function PostForm({ action, post }: PostFormProps) {
   }, [title, slugEdited]);
 
   return (
-    <form action={formAction} className="space-y-6 max-w-2xl">
+    <form action={formAction} className="space-y-7">
       {state?.error && (
-        <div className="rounded-md border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
+        <div className="rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 font-mono">
           {state.error}
         </div>
       )}
 
       {/* Title */}
-      <div className="space-y-1.5">
-        <Label htmlFor="title">Title</Label>
+      <div className="space-y-2">
+        <Label htmlFor="title" className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
+          Title
+        </Label>
         <Input
           id="title"
           name="title"
@@ -63,12 +55,15 @@ export function PostForm({ action, post }: PostFormProps) {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="What did you learn?"
+          className="text-base"
         />
       </div>
 
       {/* Slug */}
-      <div className="space-y-1.5">
-        <Label htmlFor="slug">Slug</Label>
+      <div className="space-y-2">
+        <Label htmlFor="slug" className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
+          Slug
+        </Label>
         <Input
           id="slug"
           name="slug"
@@ -81,42 +76,49 @@ export function PostForm({ action, post }: PostFormProps) {
           placeholder="url-friendly-slug"
           className="font-mono text-sm"
         />
-        <p className="text-xs text-muted-foreground">
-          This becomes the URL: /posts/{slug || "your-slug"}
+        <p className="text-xs text-zinc-400 font-mono">
+          /posts/<span className="text-zinc-600">{slug || "your-slug"}</span>
         </p>
       </div>
 
       {/* Content */}
-      <div className="space-y-1.5">
-        <Label htmlFor="content">Content (Markdown)</Label>
+      <div className="space-y-2">
+        <Label htmlFor="content" className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
+          Content <span className="normal-case text-zinc-400">(Markdown)</span>
+        </Label>
         <Textarea
           id="content"
           name="content"
           required
           defaultValue={post?.content}
-          rows={20}
-          placeholder="Write in Markdown. ## Headings, **bold**, `code`, etc."
-          className="font-mono text-sm resize-y"
+          rows={22}
+          placeholder={"## Start writing\n\nMarkdown supported — **bold**, `code`, > blockquote, etc."}
+          className="font-mono text-sm resize-y leading-relaxed"
         />
       </div>
 
-      {/* Published toggle */}
-      <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          id="published"
-          name="published"
-          defaultChecked={post?.published ?? false}
-          className="h-4 w-4 rounded border-border accent-foreground"
-        />
-        <Label htmlFor="published" className="cursor-pointer">
-          Published (visible to everyone)
-        </Label>
-      </div>
+      {/* Footer row */}
+      <div className="flex items-center justify-between pt-2">
+        <label htmlFor="published" className="flex items-center gap-2.5 cursor-pointer group">
+          <input
+            type="checkbox"
+            id="published"
+            name="published"
+            defaultChecked={post?.published ?? false}
+            className="h-4 w-4 rounded border-zinc-300 accent-pink-500 cursor-pointer"
+          />
+          <span className="text-sm text-zinc-600 group-hover:text-zinc-900 transition-colors select-none">
+            Publish
+          </span>
+          <span className="text-xs text-zinc-400 font-mono">
+            (visible to everyone)
+          </span>
+        </label>
 
-      <Button type="submit" disabled={isPending}>
-        {isPending ? "Saving…" : post ? "Save changes" : "Create post"}
-      </Button>
+        <Button type="submit" disabled={isPending} className="font-mono text-xs">
+          {isPending ? "Saving…" : post ? "Save changes" : "Create post"}
+        </Button>
+      </div>
     </form>
   );
 }

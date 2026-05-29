@@ -5,18 +5,14 @@ import { useUser, SignInButton, UserButton } from "@clerk/nextjs";
 
 export function Navbar() {
   const { isSignedIn, user } = useUser();
-
-  // The Admin link is only visible to the blog owner.
-  // NEXT_PUBLIC_ADMIN_CLERK_USER_ID is safe to expose — Clerk user IDs
-  // are already embedded in every session JWT.
   const isAdmin = user?.id === process.env.NEXT_PUBLIC_ADMIN_CLERK_USER_ID;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-zinc-200 bg-[#FAFAFA]/90 backdrop-blur-sm">
-      <nav className="max-w-2xl mx-auto px-6 h-14 flex items-center justify-between">
+    <header className="sticky top-0 z-50 border-b border-zinc-200/80 bg-[#FAFAFA]/95 backdrop-blur-sm">
+      <nav className="max-w-2xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link
           href="/"
-          className="text-sm font-semibold text-zinc-900 tracking-tight hover:text-zinc-500 transition-colors duration-150"
+          className="font-(family-name:--font-caveat) text-2xl font-bold text-zinc-900 hover:text-pink-500 transition-colors duration-150 cursor-pointer leading-none"
         >
           My Learning Blog
         </Link>
@@ -27,7 +23,7 @@ export function Navbar() {
               {isAdmin && (
                 <Link
                   href="/admin"
-                  className="text-sm text-zinc-400 hover:text-zinc-700 transition-colors duration-150 cursor-pointer"
+                  className="text-xs font-mono text-zinc-400 hover:text-zinc-700 transition-colors duration-150 cursor-pointer tracking-wide uppercase"
                 >
                   Admin
                 </Link>
