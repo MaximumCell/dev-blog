@@ -34,7 +34,10 @@ export async function createPost(
     .from("posts")
     .insert({ title, slug, content, published });
 
-  if (error) return { error: error.message };
+  if (error) {
+    if (error.code === "23505") return { error: "A post with this slug already exists. Change the slug and try again." };
+    return { error: error.message };
+  }
 
   redirect("/admin");
 }
@@ -64,7 +67,10 @@ export async function updatePost(
     .update({ title, slug, content, published, updated_at: new Date().toISOString() })
     .eq("id", id);
 
-  if (error) return { error: error.message };
+  if (error) {
+    if (error.code === "23505") return { error: "A post with this slug already exists. Change the slug and try again." };
+    return { error: error.message };
+  }
 
   redirect("/admin");
 }
