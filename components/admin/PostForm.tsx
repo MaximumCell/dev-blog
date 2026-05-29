@@ -22,6 +22,8 @@ type PostFormProps = {
   post?: Pick<Post, "title" | "slug" | "content" | "published">;
 };
 
+const DUPLICATE_SLUG_MSG = "A post with this slug already exists. Change the slug and try again.";
+
 export function PostForm({ action, post }: PostFormProps) {
   const [state, formAction, isPending] = useActionState(action, null);
 
@@ -35,11 +37,26 @@ export function PostForm({ action, post }: PostFormProps) {
     }
   }, [title, slugEdited]);
 
+  // When a duplicate slug error comes back, auto-append "-2" so the user
+  // can just hit submit again instead of manually editing the slug.
+  useEffect(() => {
+    if (state?.error === DUPLICATE_SLUG_MSG) {
+      setSlug((prev) => {
+        const match = prev.match(/^(.*)-(\d+)$/);
+        if (match) return `${match[1]}-${Number(match[2]) + 1}`;
+        return `${prev}-2`;
+      });
+      setSlugEdited(true);
+    }
+  }, [state]);
+
   return (
     <form action={formAction} className="space-y-7">
       {state?.error && (
         <div className="rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 font-mono">
-          {state.error}
+          {state.error === DUPLICATE_SLUG_MSG
+            ? "Slug was already taken — updated it for you. Submit again."
+            : state.error}
         </div>
       )}
 
