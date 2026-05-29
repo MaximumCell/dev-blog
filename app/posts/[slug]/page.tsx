@@ -47,7 +47,15 @@ export default async function PostPage({ params }: Props) {
   if (error || !post) notFound();
 
   return (
-    <article className="max-w-2xl mx-auto px-6 py-16">
+    <article
+      className="max-w-2xl mx-auto px-6 py-16"
+      style={{
+        animationName: "heroEnter",
+        animationDuration: "0.5s",
+        animationFillMode: "both",
+        animationTimingFunction: "cubic-bezier(0.16,1,0.3,1)",
+      }}
+    >
       {/* Back link */}
       <Link
         href="/"
