@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
+import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { createPublicSupabaseClient } from "@/lib/supabase/public";
 import type { Metadata } from "next";
 
@@ -83,10 +82,8 @@ export default async function PostPage({ params }: Props) {
       <div className="my-10 h-px bg-zinc-200" />
 
       {/* Content */}
-      <div className="prose prose-zinc max-w-none leading-relaxed prose-headings:font-semibold prose-headings:tracking-tight prose-a:text-pink-500 prose-a:no-underline hover:prose-a:underline prose-code:text-zinc-700 prose-code:bg-zinc-100 prose-code:rounded prose-code:px-1.5 prose-code:py-0.5 prose-code:text-sm prose-pre:bg-zinc-900 prose-pre:text-zinc-100 prose-blockquote:border-l-pink-300 prose-blockquote:text-zinc-500">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-          {post.content}
-        </ReactMarkdown>
+      <div className="prose prose-zinc max-w-none leading-relaxed prose-headings:font-semibold prose-headings:tracking-tight prose-pre:p-0 prose-pre:bg-transparent prose-pre:m-0">
+        <MarkdownRenderer content={post.content} />
       </div>
 
       {/* Footer */}

@@ -33,15 +33,26 @@ export default async function AdminPage() {
             All Posts
           </h1>
         </div>
-        <Link
-          href="/admin/new"
-          className={cn(
-            buttonVariants({ size: "sm" }),
-            "font-mono text-xs tracking-wide"
-          )}
-        >
-          + New post
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/admin/generate"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+              "font-mono text-xs tracking-wide gap-1"
+            )}
+          >
+            ✦ AI Generate
+          </Link>
+          <Link
+            href="/admin/new"
+            className={cn(
+              buttonVariants({ size: "sm" }),
+              "font-mono text-xs tracking-wide"
+            )}
+          >
+            + New post
+          </Link>
+        </div>
       </div>
 
       {error && (
