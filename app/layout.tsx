@@ -22,8 +22,11 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "My Learning Blog",
-  description: "A personal blog where I write about things I'm learning.",
+  title: {
+    default: "noob.dev",
+    template: "%s — noob.dev",
+  },
+  description: "A developer blog about software engineering, system design, and building in public.",
 };
 
 export default function RootLayout({
